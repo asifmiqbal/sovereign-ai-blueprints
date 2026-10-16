@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you reference these architectural blueprints or the 2026 MoE VRAM sizing equations, please cite as below."
+authors:
+  - family-names: "Iqbal"
+    given-names: "Asif Muhammad"
+    affiliation: "Logic42 Sovereign Engineering Practice"
+    website: "https://logic42.ai"
+title: "Beyond Vanilla RAG & 2026 Sovereign MoE GPU Repatriation Benchmark: Pre-Generation Decision Models and Bare-Metal HBM3e Sizing"
+version: 2026.10.1
+doi: 10.5281/zenodo.23417054
+date-released: 2026-10-16
+url: "https://logic42.ai/assessments/gpu-tco"
+repository-code: "https://github.com/asifmiqbal/sovereign-ai-blueprints"
+keywords:
+  - "Sovereign AI"
+  - "Mixture of Experts"
+  - "vLLM"
+  - "Apache Iceberg"
+  - "GPU Repatriation"
+  - "ISO 42001"
+  - "Pre-Generation Decision Models"

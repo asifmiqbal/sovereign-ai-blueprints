@@ -1,0 +1,33 @@
+{
+  "title": "Logic42 Sovereign AI Architecture Blueprints & 2026 Frontier MoE GPU Repatriation Benchmark",
+  "upload_type": "publication",
+  "publication_type": "technicalnote",
+  "creators": [
+    {
+      "name": "Iqbal, Asif Muhammad",
+      "affiliation": "Logic42 Sovereign Engineering Practice"
+    }
+  ],
+  "description": "Reference architectures, empirical HBM3e VRAM sizing formulas for 2026 Mixture-of-Experts (MoE) models (DeepSeek-V4.1-Flash, Kimi K2.5, GLM-5.3, Qwen 3.8), Pre-Generation Decision Models (Beyond Vanilla RAG), and 25 Production Trap autopsies from Logic42 (https://logic42.ai).",
+  "keywords": [
+    "Sovereign AI",
+    "vLLM",
+    "MoE VRAM Calculator",
+    "GPU Repatriation",
+    "Apache Iceberg",
+    "ISO 42001",
+    "RAG Security"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://logic42.ai/assessments/gpu-tco",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    },
+    {
+      "identifier": "https://logic42.ai/articles/beyond-vanilla-rag-pre-generation-decision-models",
+      "relation": "isIdenticalTo",
+      "scheme": "url"
+    }
+  ]
+}

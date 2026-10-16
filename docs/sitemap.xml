@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://asifmiqbal.github.io/sovereign-ai-blueprints/</loc><lastmod>2026-10-16</lastmod></url>
+  <url><loc>https://asifmiqbal.github.io/sovereign-ai-blueprints/articles/embedding-space-invalidation-trap-vector-migration.html</loc><lastmod>2026-10-16</lastmod></url>
+  <url><loc>https://asifmiqbal.github.io/sovereign-ai-blueprints/articles/invisible-text-rag-trap-document-copilots.html</loc><lastmod>2026-10-16</lastmod></url>
+  <url><loc>https://asifmiqbal.github.io/sovereign-ai-blueprints/articles/kv-cache-thrashing-trap-vllm-latency.html</loc><lastmod>2026-10-16</lastmod></url>
+  <url><loc>https://asifmiqbal.github.io/sovereign-ai-blueprints/articles/small-file-lakehouse-explosion-iceberg-compaction.html</loc><lastmod>2026-10-16</lastmod></url>
+  <url><loc>https://asifmiqbal.github.io/sovereign-ai-blueprints/articles/stateful-agent-memory-trap-context-bloat.html</loc><lastmod>2026-10-16</lastmod></url>
+  <url><loc>https://asifmiqbal.github.io/sovereign-ai-blueprints/articles/context-window-saturation-precision-retrieval.html</loc><lastmod>2026-10-16</lastmod></url>
+  <url><loc>https://asifmiqbal.github.io/sovereign-ai-blueprints/articles/gpu-repatriation-private-clusters-cloud-tco.html</loc><lastmod>2026-10-16</lastmod></url>
+  <url><loc>https://asifmiqbal.github.io/sovereign-ai-blueprints/articles/infinite-tool-loop-autonomous-agent-token-spikes.html</loc><lastmod>2026-10-16</lastmod></url>
+  <url><loc>https://asifmiqbal.github.io/sovereign-ai-blueprints/articles/mcp-security-trap-agent-tools-bypass-firewalls.html</loc><lastmod>2026-10-16</lastmod></url>
+  <url><loc>https://asifmiqbal.github.io/sovereign-ai-blueprints/articles/synthetic-data-model-collapse-enterprise-finetuning.html</loc><lastmod>2026-10-16</lastmod></url>
+  <url><loc>https://asifmiqbal.github.io/sovereign-ai-blueprints/articles/beyond-vanilla-rag-pre-generation-decision-models.html</loc><lastmod>2026-10-16</lastmod></url>
+  <url><loc>https://asifmiqbal.github.io/sovereign-ai-blueprints/articles/cascade-poisoning-multi-agent-meshes.html</loc><lastmod>2026-10-16</lastmod></url>
+  <url><loc>https://asifmiqbal.github.io/sovereign-ai-blueprints/articles/stale-vector-trap-unstructured-data-lineage.html</loc><lastmod>2026-10-16</lastmod></url>
+  <url><loc>https://asifmiqbal.github.io/sovereign-ai-blueprints/articles/vram-parking-idle-gpu-tax-finops.html</loc><lastmod>2026-10-16</lastmod></url>
+  <url><loc>https://asifmiqbal.github.io/sovereign-ai-blueprints/articles/graphrag-enterprise-latency-token-collapse.html</loc><lastmod>2026-10-16</lastmod></url>
+  <url><loc>https://asifmiqbal.github.io/sovereign-ai-blueprints/articles/living-off-the-agent-lota-lateral-movement.html</loc><lastmod>2026-10-16</lastmod></url>
+  <url><loc>https://asifmiqbal.github.io/sovereign-ai-blueprints/articles/sovereign-data-substrates-cloud-act.html</loc><lastmod>2026-10-16</lastmod></url>
+  <url><loc>https://asifmiqbal.github.io/sovereign-ai-blueprints/articles/ai-agent-identity-execution-layer.html</loc><lastmod>2026-10-16</lastmod></url>
+  <url><loc>https://asifmiqbal.github.io/sovereign-ai-blueprints/articles/ai-finops-request-level-cost-attribution.html</loc><lastmod>2026-10-16</lastmod></url>
+  <url><loc>https://asifmiqbal.github.io/sovereign-ai-blueprints/articles/ai-sandbox-containment-failures.html</loc><lastmod>2026-10-16</lastmod></url>
+  <url><loc>https://asifmiqbal.github.io/sovereign-ai-blueprints/articles/air-gapped-gpu-infrastructure-security.html</loc><lastmod>2026-10-16</lastmod></url>
+  <url><loc>https://asifmiqbal.github.io/sovereign-ai-blueprints/articles/securing-autonomous-ai-agents.html</loc><lastmod>2026-10-16</lastmod></url>
+  <url><loc>https://asifmiqbal.github.io/sovereign-ai-blueprints/articles/dynamic-model-routing-cost-reduction.html</loc><lastmod>2026-10-16</lastmod></url>
+  <url><loc>https://asifmiqbal.github.io/sovereign-ai-blueprints/articles/zero-trust-data-substrates.html</loc><lastmod>2026-10-16</lastmod></url>
+  <url><loc>https://asifmiqbal.github.io/sovereign-ai-blueprints/articles/enterprise-cyber-resilience-post-quantum.html</loc><lastmod>2026-10-16</lastmod></url>
+</urlset>
