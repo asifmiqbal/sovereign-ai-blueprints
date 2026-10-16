@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI Agent Identity Security: Closing the Execution Gap | Logic42 Architecture Blueprint Summary</title>
+  <meta name="description" content="AI agent identity security is your biggest unmanaged risk. See why static credentials fail and how agentic governance closes the execution layer gap." />
+  <link rel="canonical" href="https://logic42.ai/articles/ai-agent-identity-execution-layer" />
+  <meta property="og:title" content="AI Agent Identity Security: Closing the Execution Gap" />
+  <meta property="og:description" content="AI agent identity security is your biggest unmanaged risk. See why static credentials fail and how agentic governance closes the execution layer gap." />
+  <meta property="og:image" content="https://logic42.ai/images/articles/covers/ai-agent-identity-execution-layer.png" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "AI Agent Identity Security: Closing the Execution Gap",
+    "description": "AI agent identity security is your biggest unmanaged risk. See why static credentials fail and how agentic governance closes the execution layer gap.",
+    "image": "https://logic42.ai/images/articles/covers/ai-agent-identity-execution-layer.png",
+    "datePublished": "2026-08-26",
+    "mainEntityOfPage": "https://logic42.ai/articles/ai-agent-identity-execution-layer",
+    "author": {
+      "@type": "Person",
+      "name": "Asif Muhammad Iqbal",
+      "jobTitle": "Founder & CEO",
+      "url": "https://www.linkedin.com/in/asifmiqbal/",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Logic42",
+        "url": "https://logic42.ai"
+      }
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Logic42 Sovereign Engineering Practice",
+      "url": "https://logic42.ai"
+    }
+  }
+  </script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #07090e; color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.7; }
+    a { color: #f59e0b; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: 920px; margin: 0 auto; padding: 48px 24px; }
+    .breadcrumb { font-family: ui-monospace, monospace; font-size: 12px; color: #94a3b8; margin-bottom: 20px; }
+    .pill { display: inline-block; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.45); color: #f59e0b; font-family: ui-monospace, monospace; font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 999px; margin-bottom: 14px; }
+    h1 { font-size: 36px; font-weight: 800; line-height: 1.18; color: #fff; margin-bottom: 14px; }
+    .summary { font-size: 19px; color: #cbd5e1; margin-bottom: 24px; }
+    .cover { width: 100%; border-radius: 12px; border: 1px solid #1e293b; margin-bottom: 28px; }
+    .content p { margin-bottom: 18px; color: #e2e8f0; font-size: 16.5px; }
+    .box { background: #0e131f; border: 1px solid #1e293b; border-left: 4px solid #f59e0b; border-radius: 10px; padding: 24px; margin: 28px 0; }
+    .box h2 { font-size: 20px; color: #fff; margin-bottom: 12px; }
+    .box ul { padding-left: 20px; color: #cbd5e1; }
+    .box li { margin-bottom: 8px; }
+    .btn { display: inline-block; background: #f59e0b; color: #090a0f; font-weight: 800; padding: 14px 24px; border-radius: 8px; text-transform: uppercase; font-size: 14px; letter-spacing: 0.05em; margin-top: 12px; margin-right: 12px; }
+    .btn-sec { display: inline-block; background: #131826; color: #f8fafc; border: 1px solid #334155; font-weight: 700; padding: 14px 24px; border-radius: 8px; text-transform: uppercase; font-size: 14px; letter-spacing: 0.05em; margin-top: 12px; }
+    footer { margin-top: 56px; padding-top: 24px; border-top: 1px solid #1e293b; font-size: 13.5px; color: #94a3b8; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">← Logic42 Sovereign AI Architecture Blueprints</a> · <a href="https://logic42.ai/articles" rel="dofollow">Canonical Research Library</a>
+    </div>
+    <div class="pill">AI & Automation · 2026-08-26 · 10 min read</div>
+    <h1>AI Agent Identity Security: Closing the Execution Gap</h1>
+    <p class="summary">AI agent identity security is your biggest unmanaged risk. See why static credentials fail and how agentic governance closes the execution layer gap.</p>
+    <a href="https://logic42.ai/articles/ai-agent-identity-execution-layer" rel="dofollow">
+      <img class="cover" src="https://logic42.ai/images/articles/covers/ai-agent-identity-execution-layer.png" alt="AI Agent Identity Security: Closing the Execution Gap" />
+    </a>
+
+    <div class="content">
+      <p>AI agent identity security is the architectural practice of binding cryptographic identity and scoped authorization to autonomous execution loops. You spent years locking down endpoints, but the real blast radius is unprotected: where AI wields tools, modifies production databases, and runs code without oversight.</p>
+      <p>Most mid-market enterprises have spun up a sprawling network of highly capable, semi-autonomous entities. They handed them overpowered credentials. They gave them zero native identity. We aren't facing an alignment issue here. We are staring down a massive AI agent identity security crisis.</p>
+      <p>The confused deputy problem in AI is a security vulnerability where an AI agent, holding legitimate credentials, is tricked by a malicious prompt into executing unauthorized actions on behalf of an attacker.</p>
+      <p>When an AI agent uses a tool, it typically relies on a pre-assigned credential like a static AWS service account token. The receiving system sees a valid token. It doesn't know if you actually intended the action or if the agent got manipulated.</p>
+    </div>
+
+    <div class="box">
+      <h2>Architectural Blueprint Sections Covered in the Full Brief</h2>
+      <ul>
+        <li>What is the confused deputy problem in AI?</li>
+        <li>How to secure AI agent tool calls with identity</li>
+        <li>What is an AI agent gateway?</li>
+        <li>How to govern autonomous AI agents in enterprise environments</li>
+        <li>AI agent identity security and the cryptographic audit</li>
+        <li>The Takeaway</li>
+      </ul>
+      <div style="margin-top: 18px;">
+        <a class="btn" href="https://logic42.ai/articles/ai-agent-identity-execution-layer" rel="dofollow">Read Complete Canonical Brief on Logic42.ai →</a>
+        <a class="btn-sec" href="https://logic42.ai/assessments/iso-42001" rel="dofollow">Run ISO/IEC 42001:2023 AI Management System (AIMS) Readiness Diagnostic</a>
+      </div>
+    </div>
+
+    <footer>
+      Authored by <strong>Asif Muhammad Iqbal</strong> (Founder &amp; CEO at <a href="https://logic42.ai" rel="dofollow">Logic42</a>) ·
+      <a href="https://logic42.ai/assessments/gpu-tco" rel="dofollow">2026 MoE GPU Repatriation Calculator</a> ·
+      <a href="https://logic42.ai/assessments" rel="dofollow">All 7 Enterprise Diagnostics</a>
+    </footer>
+  </div>
+</body>
+</html>
