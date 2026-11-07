@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>The 'Just Use Postgres' Vector Cliff: Where pgvector HNSW Breaks at 50M Rows | Logic42 Architecture Blueprint Summary</title>
+  <meta name="description" content="Monolithic Postgres pgvector HNSW indexes hit write-amplification and VACUUM stalls past 50M rows, where hash-partitioned halfvec and DiskANN take over." />
+  <link rel="canonical" href="https://logic42.ai/articles/pgvector-hnsw-write-amplification-filtered-search-cliff" />
+  <meta property="og:title" content="The 'Just Use Postgres' Vector Cliff: Where pgvector HNSW Breaks at 50M Rows" />
+  <meta property="og:description" content="Monolithic Postgres pgvector HNSW indexes hit write-amplification and VACUUM stalls past 50M rows, where hash-partitioned halfvec and DiskANN take over." />
+  <meta property="og:image" content="https://logic42.ai/images/articles/covers/pgvector-hnsw-write-amplification-filtered-search-cliff.png" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "The 'Just Use Postgres' Vector Cliff: Where pgvector HNSW Breaks at 50M Rows",
+    "description": "Monolithic Postgres pgvector HNSW indexes hit write-amplification and VACUUM stalls past 50M rows, where hash-partitioned halfvec and DiskANN take over.",
+    "image": "https://logic42.ai/images/articles/covers/pgvector-hnsw-write-amplification-filtered-search-cliff.png",
+    "datePublished": "2026-10-18",
+    "mainEntityOfPage": "https://logic42.ai/articles/pgvector-hnsw-write-amplification-filtered-search-cliff",
+    "author": {
+      "@type": "Person",
+      "name": "Asif Muhammad Iqbal",
+      "jobTitle": "Founder & CEO",
+      "url": "https://www.linkedin.com/in/asifmiqbal/",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Logic42",
+        "url": "https://logic42.ai"
+      }
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Logic42 Sovereign Engineering Practice",
+      "url": "https://logic42.ai"
+    }
+  }
+  </script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #07090e; color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.7; }
+    a { color: #f59e0b; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: 920px; margin: 0 auto; padding: 48px 24px; }
+    .breadcrumb { font-family: ui-monospace, monospace; font-size: 12px; color: #94a3b8; margin-bottom: 20px; }
+    .pill { display: inline-block; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.45); color: #f59e0b; font-family: ui-monospace, monospace; font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 999px; margin-bottom: 14px; }
+    h1 { font-size: 36px; font-weight: 800; line-height: 1.18; color: #fff; margin-bottom: 14px; }
+    .summary { font-size: 19px; color: #cbd5e1; margin-bottom: 24px; }
+    .cover { width: 100%; border-radius: 12px; border: 1px solid #1e293b; margin-bottom: 28px; }
+    .content p { margin-bottom: 18px; color: #e2e8f0; font-size: 16.5px; }
+    .box { background: #0e131f; border: 1px solid #1e293b; border-left: 4px solid #f59e0b; border-radius: 10px; padding: 24px; margin: 28px 0; }
+    .box h2 { font-size: 20px; color: #fff; margin-bottom: 12px; }
+    .box ul { padding-left: 20px; color: #cbd5e1; }
+    .box li { margin-bottom: 8px; }
+    .btn { display: inline-block; background: #f59e0b; color: #090a0f; font-weight: 800; padding: 14px 24px; border-radius: 8px; text-transform: uppercase; font-size: 14px; letter-spacing: 0.05em; margin-top: 12px; margin-right: 12px; }
+    .btn-sec { display: inline-block; background: #131826; color: #f8fafc; border: 1px solid #334155; font-weight: 700; padding: 14px 24px; border-radius: 8px; text-transform: uppercase; font-size: 14px; letter-spacing: 0.05em; margin-top: 12px; }
+    footer { margin-top: 56px; padding-top: 24px; border-top: 1px solid #1e293b; font-size: 13.5px; color: #94a3b8; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">← Logic42 Sovereign AI Architecture Blueprints</a> · <a href="https://logic42.ai/articles" rel="dofollow">Canonical Research Library</a>
+    </div>
+    <div class="pill">Data Substrates · 2026-10-18 · 10 min read</div>
+    <h1>The 'Just Use Postgres' Vector Cliff: Where pgvector HNSW Breaks at 50M Rows</h1>
+    <p class="summary">Monolithic Postgres pgvector HNSW indexes hit write-amplification and VACUUM stalls past 50M rows, where hash-partitioned halfvec and DiskANN take over.</p>
+    <a href="https://logic42.ai/articles/pgvector-hnsw-write-amplification-filtered-search-cliff" rel="dofollow">
+      <img class="cover" src="https://logic42.ai/images/articles/covers/pgvector-hnsw-write-amplification-filtered-search-cliff.png" alt="The 'Just Use Postgres' Vector Cliff: Where pgvector HNSW Breaks at 50M Rows" />
+    </a>
+
+    <div class="content">
+      <p>Consolidating vector search onto PostgreSQL with <code>pgvector</code> simplifies stack architecture up to a few million rows, but monolithic in-memory HNSW indexes hit a steep operational cliff between 20 million and 50 million embeddings. At that scale, MVCC tuple churn triggers heavy HNSW graph write-amplification and <code>VACUUM</code> stalls, while selective multi-tenant <code>WHERE</code> filters disconnect graph entry points and collapse search recall.</p>
+      <p>Over the past two years, "Just use Postgres" became the default architectural mantra across Hacker News and enterprise engineering blogs. Instead of spinning up a separate dedicated vector database alongside a primary relational store, teams enabled <code>pgvector</code> inside their existing PostgreSQL clusters to keep ACID transactions, relational joins, and embeddings in one place.</p>
+      <p>At two million vectors, that consolidation feels unbeatable. Queries return in 8ms, backups are unified, and ops overhead is zero. Then your enterprise document ingestion pipeline scales to 50 million 1536-dimensional embeddings with continuous streaming updates and row-level security filters. Suddenly, replication lag spikes to forty minutes, <code>autovacuum</code> pins NVMe disk IOPS at 100%, and tenant-filtered vector queries don't even return ten results. It's a classic physics trap: you can't treat a multi-layer proximity graph like a standard B-tree index at fifty-million-row scale.</p>
+      <p>PostgreSQL <code>pgvector</code> HNSW hits a performance cliff at 50 million rows because Hierarchical Navigable Small World (HNSW) graphs must reside in RAM (<code>shared_buffers</code>) to avoid random disk seeks during greedy traversal. At 50 million 1536-dimensional <code>float32</code> vectors, the HNSW index exceeds 580 GB, triggering severe disk page thrashing on every concurrent upsert and <code>VACUUM</code> pass.</p>
+    </div>
+
+    <div class="box">
+      <h2>Architectural Blueprint Sections Covered in the Full Brief</h2>
+      <ul>
+        <li>Why Monolithic pgvector HNSW Stalls Past 50 Million Vectors</li>
+        <li>Monolithic HNSW Indexes vs. Partitioned halfvec & DiskANN</li>
+        <li>Hash-Partitioned halfvec Indexing & StreamingDiskANN</li>
+        <li>Three Rules for Scaling Postgres Vector Search Past 50M Rows</li>
+      </ul>
+      <div style="margin-top: 18px;">
+        <a class="btn" href="https://logic42.ai/articles/pgvector-hnsw-write-amplification-filtered-search-cliff" rel="dofollow">Read Complete Canonical Brief on Logic42.ai →</a>
+        <a class="btn-sec" href="https://logic42.ai/assessments/data-ai-maturity" rel="dofollow">Run Enterprise Data & AI Architecture Maturity Index</a>
+      </div>
+    </div>
+
+    <footer>
+      Authored by <strong>Asif Muhammad Iqbal</strong> (Founder &amp; CEO at <a href="https://logic42.ai" rel="dofollow">Logic42</a>) ·
+      <a href="https://logic42.ai/assessments/gpu-tco" rel="dofollow">2026 MoE GPU Repatriation Calculator</a> ·
+      <a href="https://logic42.ai/assessments" rel="dofollow">All 7 Enterprise Diagnostics</a>
+    </footer>
+  </div>
+</body>
+</html>

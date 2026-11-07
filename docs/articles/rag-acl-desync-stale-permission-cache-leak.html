@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RAG ACL Desynchronization: How Vector Indexes Leak Revoked Docs | Logic42 Architecture Blueprint Summary</title>
+  <meta name="description" content="Batch-synced vector indexes leak revoked SharePoint and Google Drive files for up to 24 hours. Pre-synthesis SpiceDB Zanzibar checks block stale chunks in 4.8ms." />
+  <link rel="canonical" href="https://logic42.ai/articles/rag-acl-desync-stale-permission-cache-leak" />
+  <meta property="og:title" content="RAG ACL Desynchronization: How Vector Indexes Leak Revoked Docs" />
+  <meta property="og:description" content="Batch-synced vector indexes leak revoked SharePoint and Google Drive files for up to 24 hours. Pre-synthesis SpiceDB Zanzibar checks block stale chunks in 4.8ms." />
+  <meta property="og:image" content="https://logic42.ai/images/articles/covers/rag-acl-desync-stale-permission-cache-leak.png" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "RAG ACL Desynchronization: How Vector Indexes Leak Revoked Docs",
+    "description": "Batch-synced vector indexes leak revoked SharePoint and Google Drive files for up to 24 hours. Pre-synthesis SpiceDB Zanzibar checks block stale chunks in 4.8ms.",
+    "image": "https://logic42.ai/images/articles/covers/rag-acl-desync-stale-permission-cache-leak.png",
+    "datePublished": "2026-10-26",
+    "mainEntityOfPage": "https://logic42.ai/articles/rag-acl-desync-stale-permission-cache-leak",
+    "author": {
+      "@type": "Person",
+      "name": "Asif Muhammad Iqbal",
+      "jobTitle": "Founder & CEO",
+      "url": "https://www.linkedin.com/in/asifmiqbal/",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Logic42",
+        "url": "https://logic42.ai"
+      }
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Logic42 Sovereign Engineering Practice",
+      "url": "https://logic42.ai"
+    }
+  }
+  </script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #07090e; color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.7; }
+    a { color: #f59e0b; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: 920px; margin: 0 auto; padding: 48px 24px; }
+    .breadcrumb { font-family: ui-monospace, monospace; font-size: 12px; color: #94a3b8; margin-bottom: 20px; }
+    .pill { display: inline-block; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.45); color: #f59e0b; font-family: ui-monospace, monospace; font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 999px; margin-bottom: 14px; }
+    h1 { font-size: 36px; font-weight: 800; line-height: 1.18; color: #fff; margin-bottom: 14px; }
+    .summary { font-size: 19px; color: #cbd5e1; margin-bottom: 24px; }
+    .cover { width: 100%; border-radius: 12px; border: 1px solid #1e293b; margin-bottom: 28px; }
+    .content p { margin-bottom: 18px; color: #e2e8f0; font-size: 16.5px; }
+    .box { background: #0e131f; border: 1px solid #1e293b; border-left: 4px solid #f59e0b; border-radius: 10px; padding: 24px; margin: 28px 0; }
+    .box h2 { font-size: 20px; color: #fff; margin-bottom: 12px; }
+    .box ul { padding-left: 20px; color: #cbd5e1; }
+    .box li { margin-bottom: 8px; }
+    .btn { display: inline-block; background: #f59e0b; color: #090a0f; font-weight: 800; padding: 14px 24px; border-radius: 8px; text-transform: uppercase; font-size: 14px; letter-spacing: 0.05em; margin-top: 12px; margin-right: 12px; }
+    .btn-sec { display: inline-block; background: #131826; color: #f8fafc; border: 1px solid #334155; font-weight: 700; padding: 14px 24px; border-radius: 8px; text-transform: uppercase; font-size: 14px; letter-spacing: 0.05em; margin-top: 12px; }
+    footer { margin-top: 56px; padding-top: 24px; border-top: 1px solid #1e293b; font-size: 13.5px; color: #94a3b8; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">← Logic42 Sovereign AI Architecture Blueprints</a> · <a href="https://logic42.ai/articles" rel="dofollow">Canonical Research Library</a>
+    </div>
+    <div class="pill">Cyber Security · 2026-10-26 · 9 min read</div>
+    <h1>RAG ACL Desynchronization: How Vector Indexes Leak Revoked Docs</h1>
+    <p class="summary">Batch-synced vector indexes leak revoked SharePoint and Google Drive files for up to 24 hours. Pre-synthesis SpiceDB Zanzibar checks block stale chunks in 4.8ms.</p>
+    <a href="https://logic42.ai/articles/rag-acl-desync-stale-permission-cache-leak" rel="dofollow">
+      <img class="cover" src="https://logic42.ai/images/articles/covers/rag-acl-desync-stale-permission-cache-leak.png" alt="RAG ACL Desynchronization: How Vector Indexes Leak Revoked Docs" />
+    </a>
+
+    <div class="content">
+      <p>Enterprise RAG vector databases routinely leak confidential SharePoint, Google Drive, and Confluence documents for 6 to 24 hours after an administrator revokes user access in the source system. Replacing denormalized chunk-level permission arrays with a real-time Zanzibar relationship check (<code>SpiceDB</code> / <code>OpenFGA</code>) before LLM context assembly blocks unauthorized chunk synthesis in 4.8 milliseconds.</p>
+      <p>Security teams spend millions locking down Identity and Access Management (IAM) across Microsoft Entra ID, Okta, SharePoint Online, and Google Workspace. When an employee leaves a deal team or an external legal contractor finishes an audit, revoking their folder permission takes effect across the source document management system in under two seconds.</p>
+      <p>Then the company deploys an enterprise RAG copilot. To keep vector queries fast, engineers stamp <code>allowed_users</code> and <code>allowed_groups</code> metadata arrays directly onto every vector chunk during ingestion. That shortcut creates a silent privilege-escalation window. When you revoke access on a parent folder in SharePoint, the vector database doesn't know the permission changed, so the revoked user can't be blocked at retrieval time and won't face any restriction when asking the AI chatbot to summarize the exact M&A board deck they can no longer open in their browser.</p>
+      <p>Compare the permission revocation propagation latency and exposure window we measured across a 2.4-million-document enterprise knowledge base (<code>48 million</code> vector chunks) under three access-control architectures:</p>
+    </div>
+
+    <div class="box">
+      <h2>Architectural Blueprint Sections Covered in the Full Brief</h2>
+      <ul>
+        <li>Why Denormalized Vector Metadata Tags Fail in Enterprise IAM</li>
+        <li>Stale Vector Metadata Tags vs. Real-Time Zanzibar Authorization</li>
+        <li>Enforcing 4.8ms Pre-Synthesis CheckBulkPermissions with SpiceDB</li>
+        <li>Three Rules for Zero-Leak Enterprise RAG Authorization</li>
+      </ul>
+      <div style="margin-top: 18px;">
+        <a class="btn" href="https://logic42.ai/articles/rag-acl-desync-stale-permission-cache-leak" rel="dofollow">Read Complete Canonical Brief on Logic42.ai →</a>
+        <a class="btn-sec" href="https://logic42.ai/assessments/iso-27001" rel="dofollow">Run ISO/IEC 27001:2022 & Sovereign AI Workload Security Audit</a>
+      </div>
+    </div>
+
+    <footer>
+      Authored by <strong>Asif Muhammad Iqbal</strong> (Founder &amp; CEO at <a href="https://logic42.ai" rel="dofollow">Logic42</a>) ·
+      <a href="https://logic42.ai/assessments/gpu-tco" rel="dofollow">2026 MoE GPU Repatriation Calculator</a> ·
+      <a href="https://logic42.ai/assessments" rel="dofollow">All 7 Enterprise Diagnostics</a>
+    </footer>
+  </div>
+</body>
+</html>

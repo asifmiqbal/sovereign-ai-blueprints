@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Parquet Row-Group Bloat: Why AI Agents Pull 500MB for a 4KB Lookup | Logic42 Architecture Blueprint Summary</title>
+  <meta name="description" content="Unsorted 512MB Parquet row groups force 492MB S3 downloads for 4KB lookups. Clustering 64MB row groups with PageIndex and Bloom filters cuts transfers by 99.96%." />
+  <link rel="canonical" href="https://logic42.ai/articles/duckdb-parquet-row-group-bloat-s3-range-read-cliff" />
+  <meta property="og:title" content="Parquet Row-Group Bloat: Why AI Agents Pull 500MB for a 4KB Lookup" />
+  <meta property="og:description" content="Unsorted 512MB Parquet row groups force 492MB S3 downloads for 4KB lookups. Clustering 64MB row groups with PageIndex and Bloom filters cuts transfers by 99.96%." />
+  <meta property="og:image" content="https://logic42.ai/images/articles/covers/duckdb-parquet-row-group-bloat-s3-range-read-cliff.png" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "Parquet Row-Group Bloat: Why AI Agents Pull 500MB for a 4KB Lookup",
+    "description": "Unsorted 512MB Parquet row groups force 492MB S3 downloads for 4KB lookups. Clustering 64MB row groups with PageIndex and Bloom filters cuts transfers by 99.96%.",
+    "image": "https://logic42.ai/images/articles/covers/duckdb-parquet-row-group-bloat-s3-range-read-cliff.png",
+    "datePublished": "2026-10-26",
+    "mainEntityOfPage": "https://logic42.ai/articles/duckdb-parquet-row-group-bloat-s3-range-read-cliff",
+    "author": {
+      "@type": "Person",
+      "name": "Asif Muhammad Iqbal",
+      "jobTitle": "Founder & CEO",
+      "url": "https://www.linkedin.com/in/asifmiqbal/",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Logic42",
+        "url": "https://logic42.ai"
+      }
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Logic42 Sovereign Engineering Practice",
+      "url": "https://logic42.ai"
+    }
+  }
+  </script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #07090e; color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.7; }
+    a { color: #f59e0b; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: 920px; margin: 0 auto; padding: 48px 24px; }
+    .breadcrumb { font-family: ui-monospace, monospace; font-size: 12px; color: #94a3b8; margin-bottom: 20px; }
+    .pill { display: inline-block; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.45); color: #f59e0b; font-family: ui-monospace, monospace; font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 999px; margin-bottom: 14px; }
+    h1 { font-size: 36px; font-weight: 800; line-height: 1.18; color: #fff; margin-bottom: 14px; }
+    .summary { font-size: 19px; color: #cbd5e1; margin-bottom: 24px; }
+    .cover { width: 100%; border-radius: 12px; border: 1px solid #1e293b; margin-bottom: 28px; }
+    .content p { margin-bottom: 18px; color: #e2e8f0; font-size: 16.5px; }
+    .box { background: #0e131f; border: 1px solid #1e293b; border-left: 4px solid #f59e0b; border-radius: 10px; padding: 24px; margin: 28px 0; }
+    .box h2 { font-size: 20px; color: #fff; margin-bottom: 12px; }
+    .box ul { padding-left: 20px; color: #cbd5e1; }
+    .box li { margin-bottom: 8px; }
+    .btn { display: inline-block; background: #f59e0b; color: #090a0f; font-weight: 800; padding: 14px 24px; border-radius: 8px; text-transform: uppercase; font-size: 14px; letter-spacing: 0.05em; margin-top: 12px; margin-right: 12px; }
+    .btn-sec { display: inline-block; background: #131826; color: #f8fafc; border: 1px solid #334155; font-weight: 700; padding: 14px 24px; border-radius: 8px; text-transform: uppercase; font-size: 14px; letter-spacing: 0.05em; margin-top: 12px; }
+    footer { margin-top: 56px; padding-top: 24px; border-top: 1px solid #1e293b; font-size: 13.5px; color: #94a3b8; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">← Logic42 Sovereign AI Architecture Blueprints</a> · <a href="https://logic42.ai/articles" rel="dofollow">Canonical Research Library</a>
+    </div>
+    <div class="pill">Data Substrates · 2026-10-26 · 9 min read</div>
+    <h1>Parquet Row-Group Bloat: Why AI Agents Pull 500MB for a 4KB Lookup</h1>
+    <p class="summary">Unsorted 512MB Parquet row groups force 492MB S3 downloads for 4KB lookups. Clustering 64MB row groups with PageIndex and Bloom filters cuts transfers by 99.96%.</p>
+    <a href="https://logic42.ai/articles/duckdb-parquet-row-group-bloat-s3-range-read-cliff" rel="dofollow">
+      <img class="cover" src="https://logic42.ai/images/articles/covers/duckdb-parquet-row-group-bloat-s3-range-read-cliff.png" alt="Parquet Row-Group Bloat: Why AI Agents Pull 500MB for a 4KB Lookup" />
+    </a>
+
+    <div class="content">
+      <p>Apache Parquet files written with default 512MB unsorted row groups force analytical AI agents using DuckDB, Polars, or Trino to download 492MB from S3 or Wasabi just to retrieve a single 4KB customer record. Sorting writes by <code>(tenant_id, event_ts)</code>, sizing row groups to 64MB, and enabling Parquet v2 <code>PageIndex</code> headers with split-block Bloom filters reduces S3 byte-range transfers to 184KB (<code>-99.96%</code> bandwidth) and cuts P95 query latency from 3,840ms to 68ms.</p>
+      <p>Modern AI data architectures frequently bypass traditional data warehouses by equipping autonomous agents with embedded SQL engines (<code>DuckDB</code>, <code>DataFusion</code>, <code>Polars</code>) that query Apache Parquet tables directly over S3-compatible object storage. When an enterprise remedies the [small-file Iceberg lakehouse explosion](/articles/small-file-lakehouse-explosion-iceberg-compaction) by compacting thousands of tiny JSON logs into 1GB Parquet files, batch scan throughput improves immediately.</p>
+      <p>Then an AI copilot starts running high-concurrency point lookups (<code>WHERE tenant_id = 'T-849' AND order_id = 'ORD-9921'</code>) against those compacted 1GB Parquet files. Suddenly, network interfaces saturate at 10 Gbps, DuckDB worker containers crash with Out-Of-Memory (OOM) errors, and query latency spikes past three seconds. You can't use HTTP <code>Range</code> requests to surgically fetch a 4KB row if your Parquet writer never wrote page-level offset indexes or sorted the data before compression.</p>
+      <p>Examine the object storage I/O and latency telemetry we recorded querying a 4.2GB Apache Parquet dataset (<code>64 million</code> rows across 8 files) over S3 object storage for a single-tenant agent lookup (<code>4.2 KB</code> matching payload):</p>
+    </div>
+
+    <div class="box">
+      <h2>Architectural Blueprint Sections Covered in the Full Brief</h2>
+      <ul>
+        <li>Why Default Parquet Writers Break S3 Byte-Range Pruning</li>
+        <li>Unsorted 512MB Row Groups vs. Clustered 64KB PageIndex Pruning</li>
+        <li>Writing PageIndex & Bloom-Enabled Parquet Files in PyArrow and DuckDB</li>
+        <li>Three Storage Engineering Rules for Sub-100ms S3 Agent Queries</li>
+      </ul>
+      <div style="margin-top: 18px;">
+        <a class="btn" href="https://logic42.ai/articles/duckdb-parquet-row-group-bloat-s3-range-read-cliff" rel="dofollow">Read Complete Canonical Brief on Logic42.ai →</a>
+        <a class="btn-sec" href="https://logic42.ai/assessments/data-ai-maturity" rel="dofollow">Run Enterprise Data & AI Architecture Maturity Index</a>
+      </div>
+    </div>
+
+    <footer>
+      Authored by <strong>Asif Muhammad Iqbal</strong> (Founder &amp; CEO at <a href="https://logic42.ai" rel="dofollow">Logic42</a>) ·
+      <a href="https://logic42.ai/assessments/gpu-tco" rel="dofollow">2026 MoE GPU Repatriation Calculator</a> ·
+      <a href="https://logic42.ai/assessments" rel="dofollow">All 7 Enterprise Diagnostics</a>
+    </footer>
+  </div>
+</body>
+</html>
