@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>pgvector HNSW Memory Cliffs: WAL Bloat & Iterative Scans | Logic42 Architecture Blueprint Summary</title>
+  <meta name="description" content="Fix PostgreSQL pgvector 0.8+ HNSW maintenance_work_mem disk spills, 4.2x WAL bloat, and empty multi-tenant filtered queries via halfvec and iterative scans." />
+  <link rel="canonical" href="https://logic42.ai/articles/pgvector-hnsw-memory-cliff-wal-bloat-iterative-scan" />
+  <meta property="og:title" content="pgvector HNSW Memory Cliffs: WAL Bloat & Iterative Scans" />
+  <meta property="og:description" content="Fix PostgreSQL pgvector 0.8+ HNSW maintenance_work_mem disk spills, 4.2x WAL bloat, and empty multi-tenant filtered queries via halfvec and iterative scans." />
+  <meta property="og:image" content="https://logic42.ai/images/articles/covers/pgvector-hnsw-memory-cliff-wal-bloat-iterative-scan.png" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "pgvector HNSW Memory Cliffs: WAL Bloat & Iterative Scans",
+    "description": "Fix PostgreSQL pgvector 0.8+ HNSW maintenance_work_mem disk spills, 4.2x WAL bloat, and empty multi-tenant filtered queries via halfvec and iterative scans.",
+    "image": "https://logic42.ai/images/articles/covers/pgvector-hnsw-memory-cliff-wal-bloat-iterative-scan.png",
+    "datePublished": "2026-11-11",
+    "mainEntityOfPage": "https://logic42.ai/articles/pgvector-hnsw-memory-cliff-wal-bloat-iterative-scan",
+    "author": {
+      "@type": "Person",
+      "name": "Asif Muhammad Iqbal",
+      "jobTitle": "Founder & CEO",
+      "url": "https://www.linkedin.com/in/asifmiqbal/",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Logic42",
+        "url": "https://logic42.ai"
+      }
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Logic42 Sovereign Engineering Practice",
+      "url": "https://logic42.ai"
+    }
+  }
+  </script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #07090e; color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.7; }
+    a { color: #f59e0b; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: 920px; margin: 0 auto; padding: 48px 24px; }
+    .breadcrumb { font-family: ui-monospace, monospace; font-size: 12px; color: #94a3b8; margin-bottom: 20px; }
+    .pill { display: inline-block; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.45); color: #f59e0b; font-family: ui-monospace, monospace; font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 999px; margin-bottom: 14px; }
+    h1 { font-size: 36px; font-weight: 800; line-height: 1.18; color: #fff; margin-bottom: 14px; }
+    .summary { font-size: 19px; color: #cbd5e1; margin-bottom: 24px; }
+    .cover { width: 100%; border-radius: 12px; border: 1px solid #1e293b; margin-bottom: 28px; }
+    .content p { margin-bottom: 18px; color: #e2e8f0; font-size: 16.5px; }
+    .box { background: #0e131f; border: 1px solid #1e293b; border-left: 4px solid #f59e0b; border-radius: 10px; padding: 24px; margin: 28px 0; }
+    .box h2 { font-size: 20px; color: #fff; margin-bottom: 12px; }
+    .box ul { padding-left: 20px; color: #cbd5e1; }
+    .box li { margin-bottom: 8px; }
+    .btn { display: inline-block; background: #f59e0b; color: #090a0f; font-weight: 800; padding: 14px 24px; border-radius: 8px; text-transform: uppercase; font-size: 14px; letter-spacing: 0.05em; margin-top: 12px; margin-right: 12px; }
+    .btn-sec { display: inline-block; background: #131826; color: #f8fafc; border: 1px solid #334155; font-weight: 700; padding: 14px 24px; border-radius: 8px; text-transform: uppercase; font-size: 14px; letter-spacing: 0.05em; margin-top: 12px; }
+    footer { margin-top: 56px; padding-top: 24px; border-top: 1px solid #1e293b; font-size: 13.5px; color: #94a3b8; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="../index.html">← Logic42 Sovereign AI Architecture Blueprints</a> · <a href="https://logic42.ai/articles" rel="dofollow">Canonical Research Library</a>
+    </div>
+    <div class="pill">Data Substrates · 2026-11-11 · 8 min read</div>
+    <h1>pgvector HNSW Memory Cliffs: WAL Bloat & Iterative Scans</h1>
+    <p class="summary">Fix PostgreSQL pgvector 0.8+ HNSW maintenance_work_mem disk spills, 4.2x WAL bloat, and empty multi-tenant filtered queries via halfvec and iterative scans.</p>
+    <a href="https://logic42.ai/articles/pgvector-hnsw-memory-cliff-wal-bloat-iterative-scan" rel="dofollow">
+      <img class="cover" src="https://logic42.ai/images/articles/covers/pgvector-hnsw-memory-cliff-wal-bloat-iterative-scan.png" alt="pgvector HNSW Memory Cliffs: WAL Bloat & Iterative Scans" />
+    </a>
+
+    <div class="content">
+      <p>Imagine asking a corporate librarian for ten binders on "Q3 liquidity stress tests," only to watch them grab forty binders first and check your security badge *afterward*, tossing out thirty-nine binders owned by other teams and handing you one page. That post-filter starvation, paired with <strong><code>maintenance_work_mem</code> disk spills</strong> and <strong>4.2x Write-Ahead Log (WAL) amplification</strong>, breaks <strong>PostgreSQL <code>pgvector</code></strong> past five million rows unless you enable <strong><code>halfvec</code> (<code>FP16</code>) quantization</strong> and <strong><code>pgvector 0.8+</code> iterative HNSW scans</strong>.</p>
+      <p>Consolidating relational metadata and vector embeddings inside <strong>PostgreSQL</strong> via <strong><code>pgvector</code></strong> eliminates synchronization drift between transactional tables and external vector stores. At <code>500,000</code> chunks, you don't feel memory pressure: a standard <code>vector(1536)</code> <strong>Hierarchical Navigable Small World (HNSW)</strong> index fits inside default Linux page caches and returns <code>top-10</code> Approximate Nearest Neighbor (ANN) results in <code>2.4 milliseconds</code>.</p>
+      <p>Trouble strikes abruptly between <code>5 million</code> and <code>15 million</code> vectors (<code>1,536</code> to <code>3,072</code> dimensions) when operators assume B-Tree tuning rules still apply. Unlike sequential B-Tree indexes that split cleanly across <code>8 KB</code> disk pages, an HNSW index isn't append-localized; it's a dense, multi-layered proximity graph where every vector insert updates bidirectional neighbor pointers (<code>m = 16</code> to <code>32</code> edges per node) across scattered memory pages. Crossing physical memory thresholds triggers three compounding production failures:</p>
+      <p>1. <strong>The <code>maintenance_work_mem</code> Graph-Build Cliff (<code>48x</code> Slowdown):</strong> During <code>CREATE INDEX USING hnsw</code> or <code>REINDEX</code>, PostgreSQL must hold the active graph structure inside <code>maintenance_work_mem</code>. Once a <code>10M</code>-row <code>FP32</code> graph (~<code>68 GB</code>) exceeds <code>maintenance_work_mem</code>, Postgres emits <code>NOTICE: HNSW graph no longer fits into maintenance_work_mem</code> and falls back to random disk page hops, stretching a 22-minute build into <strong>18+ hours</strong>.</p>
+    </div>
+
+    <div class="box">
+      <h2>Architectural Blueprint Sections Covered in the Full Brief</h2>
+      <ul>
+        <li>Why pgvector Works at 500K Rows and Collapses at 10M Rows</li>
+        <li>Sizing the HNSW Memory Cliff & Cutting RAM 50% with halfvec</li>
+        <li>Hardened SQL Blueprint: halfvec, Iterative Scans & Zero-WAL-Bloat Staging</li>
+        <li>Four Operational Controls to Stop WAL Bloat & Vacuum Stalls</li>
+        <li>What Is the Difference Between strictorder and relaxedorder in pgvector Iterative Scans?</li>
+        <li>Does Indexing with halfvec Require Re-Embedding Your Corpus?</li>
+        <li>When Should You Migrate Off pgvector to Qdrant, Milvus, or DiskANN?</li>
+      </ul>
+      <div style="margin-top: 18px;">
+        <a class="btn" href="https://logic42.ai/articles/pgvector-hnsw-memory-cliff-wal-bloat-iterative-scan" rel="dofollow">Read Complete Canonical Brief on Logic42.ai →</a>
+        <a class="btn-sec" href="https://logic42.ai/assessments/data-ai-maturity" rel="dofollow">Run Enterprise Data & AI Architecture Maturity Index</a>
+      </div>
+    </div>
+
+    <footer>
+      Authored by <strong>Asif Muhammad Iqbal</strong> (Founder &amp; CEO at <a href="https://logic42.ai" rel="dofollow">Logic42</a>) ·
+      <a href="https://logic42.ai/assessments/gpu-tco" rel="dofollow">2026 MoE GPU Repatriation Calculator</a> ·
+      <a href="https://logic42.ai/assessments" rel="dofollow">All 7 Enterprise Diagnostics</a>
+    </footer>
+  </div>
+</body>
+</html>

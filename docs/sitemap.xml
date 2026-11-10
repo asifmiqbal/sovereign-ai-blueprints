@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://asifmiqbal.github.io/sovereign-ai-blueprints/</loc><lastmod>2026-10-16</lastmod></url>
+  <url><loc>https://asifmiqbal.github.io/sovereign-ai-blueprints/articles/pgvector-hnsw-memory-cliff-wal-bloat-iterative-scan.html</loc><lastmod>2026-10-16</lastmod></url>
+  <url><loc>https://asifmiqbal.github.io/sovereign-ai-blueprints/articles/vllm-disaggregated-prefill-decode-nixlconnector-lmcache.html</loc><lastmod>2026-10-16</lastmod></url>
   <url><loc>https://asifmiqbal.github.io/sovereign-ai-blueprints/articles/deepseek-mla-kv-cache-compression-gpu-vram-cliffs.html</loc><lastmod>2026-10-16</lastmod></url>
   <url><loc>https://asifmiqbal.github.io/sovereign-ai-blueprints/articles/gpu-spot-preemption-finops-async-checkpointing.html</loc><lastmod>2026-10-16</lastmod></url>
   <url><loc>https://asifmiqbal.github.io/sovereign-ai-blueprints/articles/mcp-stdio-master-key-trap-local-agent-rce-cloud-iam.html</loc><lastmod>2026-10-16</lastmod></url>
